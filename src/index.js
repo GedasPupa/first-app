@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
-import { App } from './Components/App2';
+import { App } from './Components/App-Apskritimas';
 import reportWebVitals from './reportWebVitals';
 // import { Element } from './Components/element.jsx';
 
