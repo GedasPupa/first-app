@@ -1,6 +1,13 @@
+// 09.14 nd:
 // Padaryti tris kontroliuojamus inputus du text tipo ir vienas checkbox. 
 // Vienas inputas turi keisti apskritimo spalvą, kitas apskritimo skersmenį
 // ir trečias - kai pažymėtas turi pakeisti apskritimą į kvadratą.
+
+// 09.15 nd:
+// Reikia padaryti kad būtų du mygtukai. 
+// Vienas kuria apskritimus (karves), kitas kuria keturkampius (avinus). 
+// Viskas viename masyve ir draugauja su localStorage
+// Spalvos inputas vienas ir taspats abiem mygtukam
 
 import React from "react";
 
@@ -38,8 +45,8 @@ class Apskritimas extends React.Component {
         this.setState({value_1: spindulys}); 
     }
 
-    toggle = (e) => {
-        this.setState({chbox: !this.state.chbox});
+    toggle = () => {
+        this.setState(state => ({chbox: !state.chbox}));
     }
 
     refreshPage() {
