@@ -13,7 +13,7 @@ class Karves extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            karvutes: [{spalva: 'red', gyvis: 'karve'}, {spalva: 'green', gyvis: 'karve'}],
+            karvutes: [{spalva: 'red', gyvis: 'avis'}, {spalva: 'green', gyvis: 'karve'}],
             karvute: 'lightgreen'
         };
     }
@@ -42,16 +42,20 @@ class Karves extends React.Component {
     //     this.setState(state => ({chbox: !state.chbox}));
     // }
 
+    componentDidMount() {
+        const AllAnimals = localStorage.getItem('AllAnimals');
+        this.setState({karvutes: JSON.parse(AllAnimals)});
+    }
+
     refreshPage() {
         window.location.reload(); 
     }
 
     sukurKarve = (e) => {
-        // if (e.target.id === 'karve')
         const karveees = this.state.karvutes;
         karveees.push({spalva: this.state.karvute, gyvis: (e.target.id === 'karve') ? 'karve' : 'avis'});
-        this.setState(state => ({karvutes: karveees}));
-        console.log(karveees);
+        this.setState(({karvutes: karveees}));
+        localStorage.setItem('AllAnimals', JSON.stringify(this.state.karvutes));
     }
 
     inputChange = (e) => {
@@ -63,6 +67,7 @@ class Karves extends React.Component {
         return (
             <div className='main'>
                 <div className='buttons'>
+                    <h2>G A N Y K L A</h2>
                     <Buttonas id='karve' knopkesFunkcija={(e) => this.sukurKarve(e)} knopke='Pasigamink Karvę!' />
                     <Buttonas knopkesFunkcija={(e) => this.sukurKarve(e)} knopke='Pasigamink Avį!' />
                     <input onChange={(e) => this.inputChange(e)} placeholder='Parašyk spalvą!' />
