@@ -1,11 +1,19 @@
+.karve, .avis {
+    width: 121px;
+    height: 121px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    button {
+        width: fit-content;
+        align-self: center;
+    }
+}
 .karve {
-    width: 77px;
-    height: 77px;
     border-radius: 50%;
 }
 .avis {
-    width: 77px;
-    height: 77px;
     border-radius: 10px;
 }
 .ganykla {

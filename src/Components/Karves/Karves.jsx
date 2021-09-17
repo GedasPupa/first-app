@@ -4,47 +4,32 @@
 // Viskas viename masyve ir draugauja su localStorage
 // Spalvos inputas vienas ir taspats abiem mygtukam
 
+// 09.16 nd:
+// Reikia dviejų analogiškų fermų. 
+// Kiekvienas gyvulys fermoje turi turėti papildomą mygtuką - pereiti į kitą fermą
+
 import React from "react";
 import { Karve } from "./Karve";
 import './karve.scss';
 import { Buttonas } from "./Buttonas";
+import { getId } from '../../shared/nextId.js';
 
 class Karves extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            karvutes: [{spalva: 'red', gyvis: 'avis'}, {spalva: 'green', gyvis: 'karve'}],
-            karvute: 'lightgreen'
+            karvutes: [],
+            spalva: 'lightgreen'
         };
     }
 
-    // nustatykTevoState = () => {
-    //     const cnt = this.state.counter + 1;
-    //     this.setState({tevoState: 'Hello', counter: cnt, bg: 'pink'});
-    // }
-
-    // atstatykTevoState = () => {
-    //     const cnt = this.state.counter + 1;
-    //     this.setState({tevoState: 'Labas', counter: cnt, bg: 'lightblue'});
-    // }
-
-    // spalvink = (e) => {
-    //     let spalva = e.target.value;
-    //     this.setState(() => ({value_0: spalva, bg: spalva}));
-    // }
-
-    // didink = (e) => {
-    //     let spindulys = e.target.value;
-    //     this.setState({value_1: spindulys}); 
-    // }
-
-    // toggle = () => {
-    //     this.setState(state => ({chbox: !state.chbox}));
-    // }
-
     componentDidMount() {
-        const AllAnimals = localStorage.getItem('AllAnimals');
-        this.setState({karvutes: JSON.parse(AllAnimals)});
+        let AllAnimals = localStorage.getItem('AllAnimals');
+        AllAnimals = JSON.parse(AllAnimals);
+        if (AllAnimals === null) {
+            return;
+        }
+        this.setState({karvutes: AllAnimals});
     }
 
     refreshPage() {
@@ -53,13 +38,38 @@ class Karves extends React.Component {
 
     sukurKarve = (e) => {
         const karveees = this.state.karvutes;
-        karveees.push({spalva: this.state.karvute, gyvis: (e.target.id === 'karve') ? 'karve' : 'avis'});
+        karveees.push({id: getId(), spalva: this.state.spalva, gyvis: (e.target.id === 'karve') ? 'karve' : 'avis'});
         this.setState(({karvutes: karveees}));
         localStorage.setItem('AllAnimals', JSON.stringify(this.state.karvutes));
     }
 
+    istrinkKarve = (id) => {
+        const karveees = this.state.karvutes;
+        for (let i=0; i<karveees.length; i++) {
+            if (karveees[i].id === id) {
+                karveees.splice(i, 1);
+                break;
+            }
+        }
+        this.setState(({karvutes: karveees}));
+        localStorage.setItem('AllAnimals', JSON.stringify(karveees));
+    }
+
+    nuspalvinkKarve = (id, spalva1) => {
+        console.log(id, spalva1);
+        const karveees = this.state.karvutes;
+        for (let i=0; i<karveees.length; i++) {
+            if (karveees[i].id === id) {
+                karveees.splice(i, 1, {id: karveees[i].id, spalva: spalva1, gyvis: karveees[i].gyvis});
+                break;
+            }
+        }
+        this.setState(({karvutes: karveees}));
+        localStorage.setItem('AllAnimals', JSON.stringify(karveees));
+    }
+
     inputChange = (e) => {
-        this.setState(state => ({karvutes: state.karvutes, karvute: e.target.value}));
+        this.setState(state => ({karvutes: state.karvutes, spalva: e.target.value}));
 
     }
 
@@ -68,13 +78,25 @@ class Karves extends React.Component {
             <div className='main'>
                 <div className='buttons'>
                     <h2>G A N Y K L A</h2>
-                    <Buttonas id='karve' knopkesFunkcija={(e) => this.sukurKarve(e)} knopke='Pasigamink Karvę!' />
+                    <Buttonas id='karve' 
+                        knopkesFunkcija={(e) => this.sukurKarve(e)} 
+                        knopke='Pasigamink Karvę!' 
+                    />
                     <Buttonas knopkesFunkcija={(e) => this.sukurKarve(e)} knopke='Pasigamink Avį!' />
                     <input onChange={(e) => this.inputChange(e)} placeholder='Parašyk spalvą!' />
                     <Buttonas knopkesFunkcija={this.refreshPage} knopke='Refresh Man!' />
                 </div>
                 <div className='ganykla'>
-                    {this.state.karvutes.map((karvute, index) => <Karve key={index} spalva={karvute.spalva} klase={karvute.gyvis}/>)}
+                    {this.state.karvutes.map((karvute, index) => 
+                        <Karve key={index} 
+                            id={karvute.id} 
+                            spalva={karvute.spalva}
+                            spalva1={this.state.spalva}
+                            klase={karvute.gyvis} 
+                            istrinkKarve={this.istrinkKarve} 
+                            nuspalvinkKarve={this.nuspalvinkKarve} 
+                        />)
+                    }
                 </div>
             </div>
         );
